@@ -65,15 +65,19 @@ function Students() {
         }
     } 
 
+    async function deleteStudent(studentId) {
+        try {
+          const res = await axios.delete('http://localhost:8080/students/' + studentId);
+          console.log(res.data);
+          getStudents();
+        } catch(e) {
+          console.error(e, e.message);
+        }
+      }
+
     return(
         <div>
-            { students && students.map(student => (
-                <div className="student" key={ student.id }>
-                    <h4>The students full name is { student.firstName } { student.lastName }</h4>
-                    <h6>They are currently in grade { student.grade }</h6>
-                    <button onClick={ () => selectStudent(student) }>Edit student</button>
-                </div>
-            ))}
+            { students && students.map(student => <Student student={ student } selectStudent={ selectStudent } deleteStudent={ deleteStudent } />)}
 
             <div>
                 <h2>Enroll new student!</h2>
@@ -133,5 +137,15 @@ function Students() {
     )
 }
 
+function Student({ student, selectStudent, deleteStudent }) {
+    return (
+      <div key={ student.id }>
+        <h3>The students full name is <span className="first-name">{ student.firstName }</span> <span className="last-name">{ student.lastName }</span></h3>
+        <h6>They are currently in grade <span className="grade-level">{ student.grade }</span></h6>
+        <button onClick={ () => selectStudent(student) }>Edit student</button>
+        <button onClick={ () => deleteStudent(student.id) }>Delete Student</button>
+      </div>
+    )
+  }
 
 export default Students;
